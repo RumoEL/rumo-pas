@@ -1,0 +1,141 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.github.rumoel.rumoel.pas</groupId>
+		<artifactId>pas</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>bittorrentspy</artifactId>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>com.github.rumoel.rumoel.pas</groupId>
+			<artifactId>bittorrentspy-lib</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.google.jimfs</groupId>
+			<artifactId>jimfs</artifactId>
+			<version>1.2</version>
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${projectlombok.version}</version>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- LOGS -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<!-- LOGS -->
+
+
+		<!-- TORRENT <dependency> <groupId>com.turn</groupId> <artifactId>ttorrent-tracker</artifactId> 
+			<version>1.3.0-SNAPSHOT</version> </dependency> -->
+
+		<dependency>
+			<groupId>com.turn</groupId>
+			<artifactId>ttorrent</artifactId>
+			<version>1.5</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>com.turn</groupId>
+			<artifactId>ttorrent-core</artifactId>
+			<version>1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.turn</groupId>
+			<artifactId>ttorrent-cli</artifactId>
+			<version>1.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.atomashpolskiy</groupId>
+			<artifactId>bt-core</artifactId>
+			<version>${bt-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.atomashpolskiy</groupId>
+			<artifactId>bt-http-tracker-client</artifactId>
+			<version>${bt-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.atomashpolskiy</groupId>
+			<artifactId>bt-dht</artifactId>
+			<version>${bt-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.atomashpolskiy</groupId>
+			<artifactId>bt-upnp</artifactId>
+			<version>${bt-version}</version>
+		</dependency>
+		<!-- TORRENT -->
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>build-v1</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<archive>
+								<manifest>
+									<mainClass>com.github.rumoel.pas.bittorrentspy.init.PASBittorrentSpyInit</mainClass>
+								</manifest>
+							</archive>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+							<finalName>${project.artifactId}-V1-${project.version}+git-${git.commit.id.full}</finalName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>build-v2</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<archive>
+								<manifest>
+									<mainClass>com.github.rumoel.pas.bittorrentspy.v2.init.PBSInit</mainClass>
+								</manifest>
+							</archive>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+							<finalName>${project.artifactId}-V2-${project.version}+git-${git.commit.id.full}</finalName>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
+</project>

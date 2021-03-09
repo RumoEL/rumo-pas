@@ -20,9 +20,6 @@ public class TrackerHandler extends Thread {
 
 	public void add(TrackerObj tracker) {
 		if (!trackers.contains(tracker)) {
-			if (!tracker.getHandlers().contains(this)) {
-				tracker.getHandlers().add(this);
-			}
 			trackers.add(tracker);
 		}
 	}
@@ -43,4 +40,5 @@ public class TrackerHandler extends Thread {
 			executor.scheduleWithFixedDelay(() -> tracker.dump(), 0, statsDumpIntervalSecond, TimeUnit.SECONDS);
 		}
 	}
+
 }

@@ -28,8 +28,6 @@ import bt.net.Peer;
 public class StatsDumper {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StatsDumper.class);
 
-	private static final String DUMP_PATH = "./stats.txt";
-
 	private final long startedAt;
 
 	public StatsDumper(long startedAt) {
@@ -68,7 +66,6 @@ public class StatsDumper {
 
 			LOGGER.info("{}", stringBuilder);
 		} catch (Exception e) {
-			LOGGER.error("Failed to dump stats to: " + DUMP_PATH, e);
 			throw new RuntimeException(e);
 		}
 	}

@@ -12,7 +12,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.github.rumoel.rumoel.pas</groupId>
+			<groupId>com.github.rumoel.rumoel.hub</groupId>
 			<artifactId>bittorrentspy-lib</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>

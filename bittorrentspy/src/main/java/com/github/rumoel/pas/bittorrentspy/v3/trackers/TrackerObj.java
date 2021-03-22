@@ -1,4 +1,4 @@
-package com.github.rumoel.pas.bittorrentspy.v2.trackers;
+package com.github.rumoel.pas.bittorrentspy.v3.trackers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,18 +11,18 @@ public class TrackerObj implements TrackerInterface {
 
 	@Override
 	public void init() {
-		logger.info("init");
+		logger.warn("init");
 	}
 
 	@Override
 	public boolean startTr() {
-		logger.info("startTr");
+		logger.warn("startTr");
 		return false;
 	}
 
 	@Override
 	public void dump() {
-		logger.info("{}-dump", Thread.currentThread().getName());
+		logger.warn("dump");
 	}
 
 }

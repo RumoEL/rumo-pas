@@ -1,4 +1,4 @@
-package com.github.rumoel.pas.bittorrentspy.v2.trackers;
+package com.github.rumoel.pas.bittorrentspy.v3.trackers;
 
 public interface TrackerInterface {
 	void init();

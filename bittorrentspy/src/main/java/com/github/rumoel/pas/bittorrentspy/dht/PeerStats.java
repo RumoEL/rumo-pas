@@ -18,66 +18,20 @@ package com.github.rumoel.pas.bittorrentspy.dht;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+
+import com.github.rumoel.rumoel.libs.pas.torrents.peer.PeerCounter;
 
 import bt.event.PeerBitfieldUpdatedEvent;
 import bt.event.PeerConnectedEvent;
 import bt.event.PeerDisconnectedEvent;
 import bt.event.PeerDiscoveredEvent;
 import bt.net.Peer;
+import lombok.Getter;
 
 public class PeerStats {
 
-	public static class Counter {
-		private final AtomicLong discoveredTimes = new AtomicLong();
-		private final AtomicLong connectedTimes = new AtomicLong();
-		private final AtomicLong disconnectedTimes = new AtomicLong();
-		private final AtomicInteger piecesCompleted = new AtomicInteger();
-		private final AtomicInteger piecesRemaining = new AtomicInteger();
-
-		public void incrementDiscovered() {
-			discoveredTimes.addAndGet(1);
-		}
-
-		public void incrementConnected() {
-			connectedTimes.addAndGet(1);
-		}
-
-		public void incrementDisconnected() {
-			disconnectedTimes.addAndGet(1);
-		}
-
-		public void setPiecesCompleted(int piecesCompleted) {
-			this.piecesCompleted.set(piecesCompleted);
-		}
-
-		public void setPiecesRemaining(int piecesRemaining) {
-			this.piecesRemaining.set(piecesRemaining);
-		}
-
-		public long getDiscoveredTimes() {
-			return discoveredTimes.get();
-		}
-
-		public long getConnectedTimes() {
-			return connectedTimes.get();
-		}
-
-		public long getDisconnectedTimes() {
-			return disconnectedTimes.get();
-		}
-
-		public int getPiecesCompleted() {
-			return piecesCompleted.get();
-		}
-
-		public int getPiecesRemaining() {
-			return piecesRemaining.get();
-		}
-	}
-
-	private final Map<Peer, Counter> counters = new ConcurrentHashMap<>(5000);
+	@Getter
+	private final Map<Peer, PeerCounter> counters = new ConcurrentHashMap<>(5000);
 
 	public void onPeerDiscovered(PeerDiscoveredEvent event) {
 		getCounter(event.getPeer()).incrementDiscovered();
@@ -92,24 +46,60 @@ public class PeerStats {
 	}
 
 	public void onPeerBitfieldUpdated(PeerBitfieldUpdatedEvent event) {
-		Counter counter = getCounter(event.getPeer());
+		PeerCounter counter = getCounter(event.getPeer());
 		counter.setPiecesCompleted(event.getBitfield().getPiecesComplete());
 		counter.setPiecesRemaining(event.getBitfield().getPiecesRemaining());
 	}
 
-	private Counter getCounter(Peer peer) {
-		Counter counter = counters.get(peer);
-		if (counter == null) {
-			counter = new Counter();
-			Counter existing = counters.putIfAbsent(peer, counter);
-			if (existing != null) {
-				counter = existing;
+	private PeerCounter getCounter(Peer peer) {
+		synchronized (counters) {
+			PeerCounter counter;
+			if (counters.isEmpty()) {
+				counter = new PeerCounter();
+				counters.putIfAbsent(peer, counter);
+				return counter;
+			} else {
+				if (peerIFCounted(counters, peer)) {
+					return counters.get(getPeerByPeerInMap(counters, peer));
+				} else {
+					counter = new PeerCounter();
+					counters.putIfAbsent(peer, counter);
+					return counter;
+				}
 			}
 		}
-		return counter;
 	}
 
-	public Map<Peer, Counter> getCounters() {
-		return counters;
+	public static Peer getPeerByPeerInMap(Map<Peer, PeerCounter> map, Peer peer) {
+		for (Map.Entry<Peer, PeerCounter> mapEntry : map.entrySet()) {
+			Peer peerForRet = mapEntry.getKey();
+			if (peerIsPeer(peerForRet, peer)) {
+				return peerForRet;
+			}
+		}
+		return null;
 	}
+
+	public static boolean peerIFCounted(Map<Peer, PeerCounter> map, Peer peerForCheck) {
+		for (Map.Entry<Peer, PeerCounter> mapEntry : map.entrySet()) {
+			Peer mapPeer = mapEntry.getKey();
+			if (peerIsPeer(peerForCheck, mapPeer)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean peerIsPeer(Peer peer1, Peer peer2) {
+		String peer2Host = peer2.getInetAddress().getHostAddress();
+		int peer2Port = peer2.getPort();
+		String peer1Host = peer1.getInetAddress().getHostAddress();
+		int peer1Port = peer1.getPort();
+
+		if (peer2Host.equalsIgnoreCase(peer1Host) && peer2Port == peer1Port) {
+			return true;
+		}
+		return false;
+	}
+
 }

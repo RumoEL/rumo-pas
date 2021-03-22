@@ -5,15 +5,21 @@ import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.github.rumoel.pas.bittorrentspy.v2.header.Header;
+import com.github.rumoel.pas.bittorrentspy.v3.header.Header;
+import com.github.rumoel.rumoel.libs.pas.torrents.trackers.own.RumoBittorrentTrackerInfo;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class PASBittorrentSpyConfig {
+public class PASBTSPConfig {
+	@Getter
+	RumoBittorrentTrackerInfo reporterInfo = new RumoBittorrentTrackerInfo();
 	@Getter
 	@Setter
 	boolean prepare;
+	@Getter
+	@Setter
+	private String apiAddr = "http://127.0.0.1:8080/api/insecure/pasbitspy";
 
 	@Getter
 	@Setter

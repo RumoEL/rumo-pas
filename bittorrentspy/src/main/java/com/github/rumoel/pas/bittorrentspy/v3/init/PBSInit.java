@@ -1,6 +1,7 @@
-package com.github.rumoel.pas.bittorrentspy.v2.init;
+package com.github.rumoel.pas.bittorrentspy.v3.init;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.util.ServiceConfigurationError;
 
 import org.slf4j.Logger;
@@ -8,29 +9,25 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.github.rumoel.pas.bittorrentspy.config.PASBittorrentSpyConfig;
-import com.github.rumoel.pas.bittorrentspy.v2.header.Header;
-import com.github.rumoel.pas.bittorrentspy.v2.trackers.impl.TrackerDHT;
-import com.github.rumoel.pas.bittorrentspy.v2.trackers.impl.TrackerHttp;
-import com.github.rumoel.pas.bittorrentspy.v2.trackers.impl.TrackerUDP;
+import com.github.rumoel.pas.bittorrentspy.config.PASBTSPConfig;
+import com.github.rumoel.pas.bittorrentspy.v3.header.Header;
+import com.github.rumoel.pas.bittorrentspy.v3.trackers.impl.TrackerDHT;
 
 public class PBSInit {
 	static Logger logger = LoggerFactory.getLogger(PBSInit.class);
 
 	public static void main(String[] args) throws IOException {
+		// debug option
+		// java -jar file.jar socket host port
+		// ######################## String int
+		if (args != null && args.length == 3 && args[0].equalsIgnoreCase("socket")) {
+			Header.setDebugSocket(new Socket(args[1], Integer.parseInt(args[2])));
+		}
+
 		readConfig();
 
-		Header.getPasBit().initNetwork();
-		Header.getPasBit().connect();
-
-		TrackerHttp trackerHttp = new TrackerHttp();
-		TrackerUDP trackerUDP = new TrackerUDP();
 		TrackerDHT trackerDHT = new TrackerDHT();
-
-		Header.trackerHandler.add(trackerHttp);
-		Header.trackerHandler.add(trackerUDP);
 		Header.trackerHandler.add(trackerDHT);
-
 		Header.trackerHandler.init();
 		Header.trackerHandler.start();
 	}
@@ -38,8 +35,6 @@ public class PBSInit {
 	private static void readConfig() throws IOException {
 		logger.info("initConfig-start");
 		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-		// CHECK and create
-
 		if (!Header.getConfigFile().getParentFile().exists()) {
 			Header.getConfigFile().getParentFile().mkdirs();
 		}
@@ -51,7 +46,7 @@ public class PBSInit {
 			throw new ServiceConfigurationError("please edit " + Header.getConfigFile().getAbsolutePath());
 		}
 		// READ
-		Header.setConfig(mapper.readValue(Header.getConfigFile(), PASBittorrentSpyConfig.class));
+		Header.setConfig(mapper.readValue(Header.getConfigFile(), PASBTSPConfig.class));
 		if (!Header.getConfig().isPrepare()) {
 			throw new ServiceConfigurationError("please edit " + Header.getConfigFile().getAbsolutePath());
 		}

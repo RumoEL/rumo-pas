@@ -9,12 +9,27 @@
 	</parent>
 	<artifactId>bittorrentspy</artifactId>
 
-
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${springboot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<dependencies>
 		<dependency>
 			<groupId>com.github.rumoel.rumoel.hub</groupId>
 			<artifactId>bittorrentspy-lib</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
 		</dependency>
 
 
@@ -97,24 +112,6 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>build-v1</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<archive>
-								<manifest>
-									<mainClass>com.github.rumoel.pas.bittorrentspy.init.PASBittorrentSpyInit</mainClass>
-								</manifest>
-							</archive>
-							<descriptorRefs>
-								<descriptorRef>jar-with-dependencies</descriptorRef>
-							</descriptorRefs>
-							<finalName>${project.artifactId}-V1-${project.version}+git-${git.commit.id.full}</finalName>
-						</configuration>
-					</execution>
-					<execution>
 						<id>build-v2</id>
 						<phase>package</phase>
 						<goals>
@@ -123,13 +120,13 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>com.github.rumoel.pas.bittorrentspy.v2.init.PBSInit</mainClass>
+									<mainClass>com.github.rumoel.pas.bittorrentspy.v3.init.PBSInit</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>
 								<descriptorRef>jar-with-dependencies</descriptorRef>
 							</descriptorRefs>
-							<finalName>${project.artifactId}-V2-${project.version}+git-${git.commit.id.full}</finalName>
+							<finalName>${project.artifactId}-V3-${project.version}+git-${git.commit.id.full}</finalName>
 						</configuration>
 					</execution>
 				</executions>

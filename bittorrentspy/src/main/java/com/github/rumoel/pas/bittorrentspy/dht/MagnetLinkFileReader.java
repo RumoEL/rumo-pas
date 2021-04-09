@@ -37,12 +37,12 @@ import bt.magnet.MagnetUriParser;
 public class MagnetLinkFileReader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MagnetLinkFileReader.class);
 
-	public Collection<MagnetUri> readFromFile(String path) {
+	public Collection<MagnetUri> readFromFile(File file) {
 
 		// explicitly convert to magnet objects to filter out unparseable garbage
 		MagnetUriParser parser = MagnetUriParser.lenientParser();
 
-		return readLines(path).stream().map(line -> {
+		return readLines(file).stream().map(line -> {
 			Optional<MagnetUri> uri = Optional.empty();
 			try {
 				uri = Optional.of(parser.parse(line));
@@ -53,15 +53,15 @@ public class MagnetLinkFileReader {
 		}).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
 	}
 
-	private Collection<String> readLines(String pathToFile) {
-		if (pathToFile == null) {
+	private Collection<String> readLines(File file) {
+		if (file == null) {
 			LOGGER.error("File with magnets was not provided");
 			System.exit(-1);
 		}
 
 		// read and de-duplicate
 		Set<String> lines = new HashSet<>();
-		try (InputStream in = new FileInputStream(new File(pathToFile))) {
+		try (InputStream in = new FileInputStream(file)) {
 			BufferedReader r = new BufferedReader(new InputStreamReader(in));
 			String line;
 			while ((line = r.readLine()) != null) {
@@ -71,7 +71,7 @@ public class MagnetLinkFileReader {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.error("I/O exception when reading file with magnets: " + pathToFile, e);
+			LOGGER.error("I/O exception when reading file with magnets: " + file.getAbsolutePath(), e);
 			System.exit(-1);
 		}
 		return lines;

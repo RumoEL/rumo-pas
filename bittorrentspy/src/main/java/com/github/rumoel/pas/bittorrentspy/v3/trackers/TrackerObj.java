@@ -1,6 +1,4 @@
-package com.github.rumoel.pas.bittorrentspy.v2.trackers;
-
-import java.util.concurrent.CopyOnWriteArrayList;
+package com.github.rumoel.pas.bittorrentspy.v3.trackers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,23 +8,21 @@ import lombok.Getter;
 public class TrackerObj implements TrackerInterface {
 	@Getter
 	Logger logger = LoggerFactory.getLogger(getClass());
-	@Getter
-	CopyOnWriteArrayList<TrackerHandler> handlers = new CopyOnWriteArrayList<>();
 
 	@Override
 	public void init() {
-		logger.info("init");
+		logger.warn("init");
 	}
 
 	@Override
 	public boolean startTr() {
-		logger.info("startTr");
+		logger.warn("startTr");
 		return false;
 	}
 
 	@Override
 	public void dump() {
-		logger.info("{}-dump", Thread.currentThread().getName());
+		logger.warn("dump");
 	}
 
 }
